@@ -1,47 +1,64 @@
-import execa, { ExecaReturnBase } from "execa";
 import * as TE from "fp-ts/lib/TaskEither";
 import * as E from "fp-ts/lib/Either";
 import { pipe } from "fp-ts/lib/pipeable";
-import { array } from "fp-ts/lib/Array";
 import * as Dir from "./Directory";
-import { prependString, propAny } from "./random";
-
-const pass = () => undefined;
-
-const log = (tag: string) => <T>(data: T) => {
-  console.log(tag, data);
-
-  return data;
-};
-
-const cloneRepo = (repo: string, path: string): TE.TaskEither<string, void> =>
-  pipe(
-    TE.tryCatch(
-      () => execa("git", ["clone", repo, path]).then(pass),
-      propAny<ExecaReturnBase<any>>("stderr")
-    ),
-    TE.mapLeft(prependString("[GIT CLONE]"))
-  );
+import { renderTemplate, stripHbsExtension } from "./random";
+import * as File from "./File";
+import { always, curry, map } from "ramda";
+import { array } from "fp-ts/lib/Array";
+import { cloneRepo } from "./Github";
 
 const templatesClonePath = "./.__templates";
 
 const template = "typescript",
-  path = "./";
+  path = "./",
+  data = {
+    package_name: "hello",
+    package_description: Math.random().toString()
+  };
+
+const importTemplates: TE.TaskEither<string, void> = pipe(
+  cloneRepo(
+    "https://github.com/isthatcentered/create-templates.git",
+    templatesClonePath
+  ),
+  TE.chain(() => Dir.copy(templatesClonePath + "/" + template, path)),
+  TE.chain(() => Dir.remove(templatesClonePath))
+);
+
+const findTemplateFiles: TE.TaskEither<string, string[]> = File.find(
+  /.hbs/i,
+  path
+);
+
+const renderFile = curry(
+  (
+    data: Record<string, any>,
+    file: string
+  ): TE.TaskEither<string, typeof file> =>
+    pipe(
+      File.overwrite(renderTemplate(data), file),
+      TE.map(always(file))
+    )
+);
+
+const stripHbsExtensionForTemplateFiles = (
+  file: string
+): TE.TaskEither<string, typeof file> =>
+  pipe(
+    File.rename(file, stripHbsExtension(file)),
+    TE.map(always(stripHbsExtension(file)))
+  );
 
 export default () =>
-  array
-    .sequence(TE.taskEitherSeq)([
-      cloneRepo(
-        "https://github.com/isthatcentered/create-templates.git",
-        templatesClonePath
-      ),
-      Dir.copy(templatesClonePath + "/" + template, path),
-      Dir.remove(templatesClonePath)
-      // process hbs
-      // stip .hbs
-      // install packages
-    ])()
-    .then(E.fold(console.error, () => console.log("Done!")));
+  pipe(
+    importTemplates,
+    TE.chain(() => findTemplateFiles),
+    TE.map(map(renderFile(data))),
+    TE.chain(array.sequence(TE.taskEither)),
+    TE.map(map(stripHbsExtensionForTemplateFiles)),
+    TE.chain(array.sequence(TE.taskEither))
+  )().then(E.fold(console.error, () => console.log("Done!")));
 
 // const commander = require('commander');
 // const program = new commander.Command();
