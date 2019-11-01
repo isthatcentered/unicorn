@@ -2,6 +2,53 @@
   "name": "@isthatcentered/scaffold",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "source": "./src/index.ts",
+  "scripts": {
+    "try": "node bin/scaffold",
+    "clean": "rm -rf ./dist",
+    "prebuild": "yarn clean",
+    "build": "yarn rollup -c",
+    "start": "yarn rollup -c -w",
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "bin": {
+    "scaffold": "bin/scaffold"
+  },
   "author": "Edouard",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@types/execa": "^2.0.0",
+    "commander": "^3.0.2",
+    "execa": "^3.2.0",
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/jest": "^24.0.21",
+    "@types/jest-json-schema": "^2.1.1",
+    "@types/node": "^12.12.3",
+    "@types/ramda": "^0.26.33",
+    "@wessberg/rollup-plugin-ts": "^1.1.73",
+    "fp-ts": "^2.1.1",
+    "jest": "^24.9.0",
+    "jest-extended": "^0.11.2",
+    "jest-json-schema": "^2.1.0",
+    "jest-plugin-must-assert": "^1.5.0",
+    "ramda": "^0.26.1",
+    "rollup": "^1.26.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-notify": "^1.1.0",
+    "rollup-plugin-sizes": "^0.5.1",
+    "rollup-plugin-visualizer": "^2.6.0",
+    "template-file": "^3.1.0",
+    "testdouble": "^3.12.4",
+    "testdouble-jest": "^2.0.0",
+    "ts-jest": "^24.1.0",
+    "tslib": "^1.10.0",
+    "typescript": "^3.6.4"
+  }
 }
