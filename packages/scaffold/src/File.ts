@@ -1,5 +1,5 @@
 import * as TE from "fp-ts/lib/TaskEither";
-import findModule from "find";
+import fnd from "find";
 import { compose, curry } from "ramda";
 import { pass, prependString, propAny } from "./random";
 import { readFile, rename as fsRename, writeFile } from "fs-extra";
@@ -10,8 +10,7 @@ export const find = (
   path: string
 ): TE.TaskEither<string, string[]> =>
   TE.tryCatch(
-    () =>
-      new Promise((res, rej) => findModule.file(pattern, path, res).error(rej)),
+    () => new Promise((res, rej) => fnd.file(pattern, path, res).error(rej)),
     compose(
       prependString("[FIND FILES]"),
       propAny<Error>("message")

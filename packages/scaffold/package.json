@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/find": "^0.2.1",
     "@types/fs-extra": "^8.0.1",
+    "@types/inquirer": "^6.5.0",
     "@types/jest": "^24.0.21",
     "@types/jest-json-schema": "^2.1.1",
     "@types/node": "^12.12.3",
@@ -52,6 +53,7 @@
     "testdouble-jest": "^2.0.0",
     "ts-jest": "^24.1.0",
     "tslib": "^1.10.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.6.4",
+    "utility-types": "^3.9.0"
   }
 }

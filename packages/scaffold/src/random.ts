@@ -18,3 +18,4 @@ export const log = (tag: string) => <T>(data: T) => {
 
   return data;
 };
+export const type = <T>() => (thing: any) => thing as T;

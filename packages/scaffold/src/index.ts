@@ -7,8 +7,11 @@ import * as File from "./File";
 import { always, curry, map } from "ramda";
 import { array } from "fp-ts/lib/Array";
 import { cloneRepo } from "./Github";
+import { ask, Prompts } from "./ask";
+import * as R from "fp-ts/lib/ReaderTaskEither";
+import { join, resolve } from "path";
 
-const templatesClonePath = "./.__templates";
+const templatesClonePath = resolve(".", ".__templates");
 
 const template = "typescript",
   path = "./",
@@ -42,7 +45,7 @@ const renderFile = curry(
     )
 );
 
-const stripHbsExtensionForTemplateFiles = (
+const stripHbsExtensionFromFilename = (
   file: string
 ): TE.TaskEither<string, typeof file> =>
   pipe(
@@ -50,44 +53,107 @@ const stripHbsExtensionForTemplateFiles = (
     TE.map(always(stripHbsExtension(file)))
   );
 
-export default () =>
-  pipe(
-    importTemplates,
-    TE.chain(() => findTemplateFiles),
-    TE.map(map(renderFile(data))),
-    TE.chain(array.sequence(TE.taskEither)),
-    TE.map(map(stripHbsExtensionForTemplateFiles)),
-    TE.chain(array.sequence(TE.taskEither))
-  )().then(E.fold(console.error, () => console.log("Done!")));
+const promoteTemplateFile = curry(
+  (
+    data: Record<string, any>,
+    file: string
+  ): TE.TaskEither<string, typeof file> =>
+    pipe(
+      renderFile(data, file),
+      TE.chain(stripHbsExtensionFromFilename)
+    )
+);
 
-// const commander = require('commander');
-// const program = new commander.Command();
-// program.version('0.0.1');
-//
-// program
-// 	.option('-d, --debug', 'output extra debugging')
-// 	.option('-s, --small', 'small pizza size')
-// 	.option('-p, --pizza-type <type>', 'flavour of pizza');
-//
-// program.parse(process.argv);
-//
-// if (program.debug) console.log(program.opts());
-// console.log('pizza details:');
-// if (program.small) console.log('- small pizza size');
-// if (program.pizzaType) console.log(`- ${program.pizzaType}`);
-// const inquirer = require('inquirer');
-//
-// const questions = [
-// 	{ type: 'list', name: 'coffeType', message: 'Choose coffee type', choices: ["a", "b"] },
-// 	{ type: 'list', name: 'sugarLevel', message: 'Choose your sugar level', choices: ["a", "b"] },
-// 	{ type: 'confirm', name: 'decaf', message: 'Do you prefer your coffee to be decaf?', default: false },
-// 	{ type: 'confirm', name: 'cold', message: 'Do you prefer your coffee to be cold?', default: false },
-// 	{ type: 'list', name: 'servedIn', message: 'How do you prefer your coffee to be served in', choices: ["a", "b"] },
-// 	{ type: 'confirm', name: 'stirrer', message: 'Do you prefer your coffee with a stirrer?', default: true },
-// ];
-//
-// inquirer
-// 	.prompt(questions)
-// 	.then(function (answers) {
-// 		console.log(answers);
-// 	})
+const promoteTemplateFiles = curry(
+  (
+    data: Record<string, any>,
+    files: string[]
+  ): TE.TaskEither<string, typeof files> =>
+    pipe(
+      map(promoteTemplateFile(data))(files),
+      array.sequence(TE.taskEither)
+    )
+);
+
+type TemplateConfig = {
+  package_name: string;
+  package_description: string;
+  path: string;
+  template: string;
+};
+
+const questions: Prompts<TemplateConfig> = {
+  package_name: {
+    type: "input",
+    message: "Package name"
+  },
+  package_description: {
+    type: "input",
+    message: "Package description"
+  },
+  path: {
+    type: "input",
+    message: "Path",
+    default: "."
+  },
+  template: {
+    type: "list",
+    message: "Template",
+    // @ts-ignore
+    choices: ["typescript"]
+  }
+};
+
+type Config = {
+  templatesRepo: string;
+  templatesClonePath: string;
+};
+
+const cloneTemplatesRepo = (): R.ReaderTaskEither<Config, string, void> => ({
+  templatesRepo,
+  templatesClonePath
+}) => cloneRepo(templatesRepo, templatesClonePath);
+
+const extractTemplate = (): R.ReaderTaskEither<Config, string, void> => ({
+  templatesClonePath
+}) =>
+  pipe(
+    Dir.copy(join(templatesClonePath, "typescript"), resolve(".")),
+    TE.chain(() => Dir.remove(templatesClonePath))
+  );
+
+const config = {
+  templatesRepo: "https://github.com/isthatcentered/create-templates.git",
+  templatesClonePath: resolve(".", ".__templates")
+};
+
+const app: () => Promise<void> = () =>
+  pipe(
+    R.fromTaskEither<Config, string, TemplateConfig>(
+      ask<TemplateConfig>(questions)
+    ),
+    // R.right<Config, string, undefined>( undefined ),
+    R.chain(cloneTemplatesRepo),
+    R.chain(extractTemplate),
+
+    // configuretemplate
+    R.chain(() => R.fromTaskEither(findTemplateFiles)),
+    R.chain(files => R.fromTaskEither(promoteTemplateFiles(data)(files)))
+
+    // installpackages
+  )(config)()
+    .then(E.fold(console.error, () => console.log("Done!")))
+    .catch(console.error);
+
+export default app;
+
+const blah = () =>
+  pipe(
+    ask(questions),
+    TE.chain(() => importTemplates),
+    TE.chain(() => findTemplateFiles),
+    TE.chain(promoteTemplateFiles(data))
+    //install packages
+  )()
+    .then(E.fold(console.error, () => console.log("Done!")))
+    .catch(console.error);
