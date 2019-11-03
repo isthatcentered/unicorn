@@ -1,5 +1,8 @@
-import { curry } from "ramda";
+import { curry, map } from "ramda";
 import handlebars from "handlebars";
+import * as TE from "fp-ts/lib/TaskEither";
+import { flow } from "fp-ts/lib/function";
+import { array } from "fp-ts/lib/Array";
 
 export const prependString = (prepend: string) => (str: string) =>
   prepend.concat(" ", str);
@@ -19,3 +22,11 @@ export const log = (tag: string) => <T>(data: T) => {
   return data;
 };
 export const type = <T>() => (thing: any) => thing as T;
+const mergeTE = array.sequence(TE.taskEitherSeq);
+export const todoList = <A, E, B>(
+  ma: (item: A) => TE.TaskEither<E, B>
+): ((items: A[]) => TE.TaskEither<E, B[]>) =>
+  flow(
+    map(ma),
+    mergeTE
+  );

@@ -20,6 +20,8 @@ it("map", () => {
     )
   );
 
+  R.right<{ name: string }, string, number>(5)({ name: "batman" });
+
   app({ package_name: "@isthatcentered/blah" })().then(console.log);
 });
 
