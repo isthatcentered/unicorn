@@ -8,40 +8,44 @@ import * as Dir from "./Directory";
 import { join, resolve } from "path";
 import * as File from "./File";
 
-const findTemplateFiles = (path: string): TE.TaskEither<string, string[]> =>
-  File.find(/.hbs/i, path);
+const findTemplateFiles: (
+  path: string
+) => TE.TaskEither<string, string[]> = path => File.find(/.hbs/i, path);
 
-const cloneTemplatesRepo = (): R.ReaderTaskEither<AppConfig, string, void> => ({
-  templatesRepo,
-  templatesClonePath
-}) => cloneRepo(templatesRepo, templatesClonePath);
-
-const extractTemplate = (): R.ReaderTaskEither<AppConfig, string, void> => ({
-  templatesClonePath,
-  template,
-  path
-}) => Dir.copy(join(templatesClonePath, template), resolve(path));
-
-const applyPackageConfig = (): R.ReaderTaskEither<
+const cloneTemplatesRepo: () => R.ReaderTaskEither<
   AppConfig,
   string,
   void
-> => config =>
+> = () => ({ templatesRepo, templatesClonePath }) =>
+  cloneRepo(templatesRepo, templatesClonePath);
+
+const extractTemplate: () => R.ReaderTaskEither<
+  AppConfig,
+  string,
+  void
+> = () => ({ templatesClonePath, template, path }) =>
+  Dir.copy(join(templatesClonePath, template), resolve(path));
+
+const applyPackageConfig: () => R.ReaderTaskEither<
+  AppConfig,
+  string,
+  void
+> = () => config =>
   pipe(
     findTemplateFiles(config.path),
     TE.chain(todoList(file => File.overwrite(renderTemplate(config), file))),
     TE.map(pass)
   );
 
-const stripTemplateExtension = (
+const stripTemplateExtension: (
   file: string
-): TE.TaskEither<string, typeof file> =>
+) => TE.TaskEither<string, typeof file> = file =>
   pipe(
     File.rename(file, stripHbsExtension(file)),
     TE.map(always(stripHbsExtension(file)))
   );
 
-const cleanUp = (): R.ReaderTaskEither<AppConfig, string, void> => ({
+const cleanUp: () => R.ReaderTaskEither<AppConfig, string, void> = () => ({
   templatesClonePath,
   path
 }) =>
@@ -57,6 +61,7 @@ export type PackageConfig = {
   path: string;
   template: string;
 };
+
 type AppConfig = {
   templatesRepo: string;
   templatesClonePath: string;
