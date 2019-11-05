@@ -33,7 +33,7 @@ const applyPackageConfig: () => R.ReaderTaskEither<
 > = () => config =>
 	pipe(
 		findTemplateFiles(config.path),
-		TE.chain(todoList(file => File.overwrite(renderTemplate(config), file))),
+		TE.chain(todoList(File.overwrite(renderTemplate(config)))),
 		TE.map(pass),
 	)
 
