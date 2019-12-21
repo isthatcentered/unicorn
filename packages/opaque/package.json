@@ -1,6 +1,6 @@
 {
 	"name": "@isthatcentered/opaque",
-	"version": "1.0.0",
+	"version": "0.0.0",
 	"description": "Opaque types for typescript",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
