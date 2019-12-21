@@ -23,8 +23,7 @@
 	"nohoist": [],
 	"husky": {
 		"hooks": {
-			"pre-commit": "yarn pretty-quick --staged",
-			"prepare-commit-msg": "exec < /dev/tty && yarn git-cz --hook"
+			"pre-commit": "yarn pretty-quick --staged"
 		}
 	},
 	"config": {
