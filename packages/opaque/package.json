@@ -5,6 +5,7 @@
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
 	"source": "src/index.ts",
+	"private": true,
 	"types": "dist/cjs/index.d.ts",
 	"scripts": {
 		"clean": "rm -rf ./dist",
