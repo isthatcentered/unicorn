@@ -5,6 +5,9 @@
 	"bugs": "https://github.com/isthatcentered/unicorn/issues",
 	"repository": "isthatcentered/unicorn",
 	"homepage": "https://github.com/isthatcentered/unicorn",
+	"publishConfig": {
+		"access": "public"
+	},
 	"keywords": [
 		"git",
 		"github",
