@@ -5,8 +5,11 @@
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
 	"source": "src/index.ts",
-	"private": true,
+	"private": false,
 	"types": "dist/cjs/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"clean": "rm -rf ./dist",
 		"prebuild": "yarn clean",
