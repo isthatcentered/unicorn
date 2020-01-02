@@ -1,22 +1,22 @@
 const identity = <A>(a: A): A => a
 
 type Opaque<ID, T> = {
-	of: (data: T) => ID
-	fold: (id: ID) => T
-	foldMap: <B>(fa: (a: T) => B) => (id: ID) => B
+	wrap: (data: T) => ID
+	unwrap: (id: ID) => T
+	unwrapMap: <B>(fa: (a: T) => B) => (id: ID) => B
 	map: (fa: (a: T) => T) => (id: ID) => ID
 }
 
 export function opaque<ID, T>(): Opaque<ID, T> {
-	const of: Opaque<ID, T>["of"] = identity as any
-	const fold: Opaque<ID, T>["fold"] = identity as any
-	const foldMap: Opaque<ID, T>["foldMap"] = fa => id => fa(fold(id))
-	const map: Opaque<ID, T>["map"] = fa => id => of(fa(fold(id)))
+	const wrap: Opaque<ID, T>["wrap"] = identity as any
+	const unwrap: Opaque<ID, T>["unwrap"] = identity as any
+	const unwrapMap: Opaque<ID, T>["unwrapMap"] = fa => id => fa(unwrap(id))
+	const map: Opaque<ID, T>["map"] = fa => id => wrap(fa(unwrap(id)))
 
 	return {
-		of,
-		fold,
-		foldMap,
+		wrap,
+		unwrap,
+		unwrapMap,
 		map,
 	}
 }

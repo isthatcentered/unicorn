@@ -7,11 +7,11 @@ describe(`Opaque`, () => {
 		readonly EUR: unique symbol
 	}
 
-	test(`"foldMap" unwraps the value and transforms it`, () => {
-		const { foldMap, of } = opaque<Eur, number>(),
+	test(`"unwrapMap" unwraps the value and transforms it`, () => {
+		const { unwrapMap, wrap } = opaque<Eur, number>(),
 			toDisplayValue: (n: number) => string = n => n.toString() + "€"
 
-		const result = foldMap(toDisplayValue)(of(4))
+		const result = unwrapMap(toDisplayValue)(wrap(4))
 
 		expect(result).toBe("4€")
 
@@ -19,30 +19,30 @@ describe(`Opaque`, () => {
 	})
 
 	test(`"map" applies a transformation to the opaque`, () => {
-		const { map, of, fold } = opaque<Eur, number>(),
+		const { map, wrap, unwrap } = opaque<Eur, number>(),
 			mutlitplyBy2 = (n: number) => n * 2
 
-		const result = map(mutlitplyBy2)(of(4))
+		const result = map(mutlitplyBy2)(wrap(4))
 
-		expect(fold(result)).toBe(8)
+		expect(unwrap(result)).toBe(8)
 
 		assertType<IsExact<typeof result, Eur>>(true)
 	})
 
 	test(`"of" wraps value`, () => {
-		const { of, fold } = opaque<Eur, number>()
+		const { wrap, unwrap } = opaque<Eur, number>()
 
-		const result = of(4)
+		const result = wrap(4)
 
-		expect(fold(result)).toBe(4)
+		expect(unwrap(result)).toBe(4)
 
 		assertType<IsExact<typeof result, Eur>>(true)
 	})
 
 	test(`"fold" unwraps value`, () => {
-		const { of, fold } = opaque<Eur, number>()
+		const { wrap, unwrap } = opaque<Eur, number>()
 
-		const result = fold(of(4))
+		const result = unwrap(wrap(4))
 
 		expect(result).toBe(4)
 
@@ -62,9 +62,9 @@ describe(`Opaque`, () => {
 		const eur = opaque<Eur, number>()
 		const doll = opaque<Doll, number>()
 
-		const wrappedEur: Eur = eur.of(3)
+		const wrappedEur: Eur = eur.wrap(3)
 
-		const wrappedDoll: Doll = doll.of(3)
+		const wrappedDoll: Doll = doll.wrap(3)
 
 		assertType<Has<typeof wrappedDoll, Eur>>(false)
 		assertType<Has<typeof wrappedEur, Doll>>(false)
