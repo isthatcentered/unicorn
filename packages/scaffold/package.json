@@ -10,7 +10,8 @@
 		"build": "yarn rollup -c",
 		"start": "yarn rollup -c -w",
 		"test": "jest",
-		"test:watch": "jest --watch"
+		"test:watch": "jest --watch",
+		"prepublish": "yarn build"
 	},
 	"bin": {
 		"scaffold": "bin/scaffold"

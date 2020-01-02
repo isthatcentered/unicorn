@@ -31,7 +31,8 @@
 		"prebuild": "yarn clean",
 		"build": "yarn test && yarn rollup -c",
 		"start": "yarn rollup -c -w",
-		"pretty": "yarn pretty-quick"
+		"pretty": "yarn pretty-quick",
+		"prepublish": "yarn build"
 	},
 	"dependencies": {
 		"execa": "^4.0.0",

@@ -17,7 +17,8 @@
 		"start": "yarn rollup -c -w",
 		"test": "jest",
 		"test:watch": "jest --watch",
-		"pretty": "yarn pretty-quick"
+		"pretty": "yarn pretty-quick",
+		"prepublish": "yarn build"
 	},
 	"keywords": [],
 	"author": "Edouard Penin <e.peninb@gmail.com>",
