@@ -64,5 +64,6 @@
 		"trailingComma": "all",
 		"bracketSpacing": true,
 		"jsxBracketSameLine": false
-	}
+	},
+	"gitHead": "b80d7daf3a4012224f78470ac4eaf63d75cfc44f"
 }
