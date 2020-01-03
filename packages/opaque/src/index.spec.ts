@@ -1,5 +1,5 @@
 import { assert as assertType, Has, IsExact } from "conditional-type-checks"
-import { opaque } from "."
+import opaque from "."
 
 describe(`Opaque`, () => {
 	interface Eur {

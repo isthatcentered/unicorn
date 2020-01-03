@@ -7,7 +7,7 @@ type Opaque<ID, T> = {
 	map: (fa: (a: T) => T) => (id: ID) => ID
 }
 
-export function opaque<ID, T>(): Opaque<ID, T> {
+function opaque<ID, T>(): Opaque<ID, T> {
 	const wrap: Opaque<ID, T>["wrap"] = identity as any
 	const unwrap: Opaque<ID, T>["unwrap"] = identity as any
 	const unwrapMap: Opaque<ID, T>["unwrapMap"] = fa => id => fa(unwrap(id))
@@ -20,3 +20,4 @@ export function opaque<ID, T>(): Opaque<ID, T> {
 		map,
 	}
 }
+export default opaque
