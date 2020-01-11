@@ -3,6 +3,9 @@
 	"version": "1.0.3-alpha.0",
 	"main": "dist/index.js",
 	"source": "./src/index.ts",
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"try": "node bin/scaffold",
 		"clean": "rm -rf ./dist",
