@@ -1,0 +1,26 @@
+{
+	"name": "@isthatcentered/log",
+	"version": "1.0.0",
+	"description": "Logging but with emojis",
+	"author": "Edouard <e.peninb@gmail.com>",
+	"homepage": "https://github.com/isthatcentered/unicorn#readme",
+	"license": "ISC",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/isthatcentered/unicorn.git"
+	},
+	"scripts": {
+		"clean": "rm -rf dist",
+		"prebuild": "yarn clean",
+		"build": "yarn tsc --project tsconfig.json",
+		"prepublish": "yarn build"
+	},
+	"bugs": {
+		"url": "https://github.com/isthatcentered/unicorn/issues"
+	},
+	"devDependencies": {
+		"typescript": "^3.7.4"
+	}
+}
