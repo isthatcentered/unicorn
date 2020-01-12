@@ -6,6 +6,9 @@
 	"module": "dist/esm/index.js",
 	"source": "src/index.ts",
 	"types": "dist/cjs/index.d.ts",
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
 		"clean": "rm -rf ./dist",
 		"prebuild": "yarn clean",
@@ -64,5 +67,6 @@
 	},
 	"dependencies": {
 		"ftp-deploy": "^2.3.6"
-	}
+	},
+	"gitHead": "266b256467e5cd810f745265e0da64a9dd35434e"
 }
