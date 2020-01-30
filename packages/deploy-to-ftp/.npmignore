@@ -1,2 +1,6 @@
 src
 .cache
+.env
+stats.html
+jest*
+test.js
