@@ -3,9 +3,12 @@
 Merge default and override styles and classes for react component
 
 ```tsx
-import { CSSProperties, ReactNode } from "react"
+import { StyleProps } from "@isthatcentered/paint"
+import paint from "@isthatcentered/paint"
 
-const MyComponent = (props: {className?: string, className?: string, style?: CSSProperties} ) => (
+
+const MyComponent = (props: StyleProps<{myCustomProp: any}> ) => (
+    {/* You can provide only "className" or only "style" or both, as you wish 🤗 */}
     <div {...paint({className: "a", style: {background: red}},  props)} />
 )
 
