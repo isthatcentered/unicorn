@@ -1,6 +1,9 @@
 {
 	"name": "@isthatcentered/paint",
 	"version": "1.0.1-alpha.0",
+	"publishConfig": {
+		"access": "public"
+	},
 	"description": "Merge default and override styles and classes for react component",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
@@ -61,5 +64,6 @@
 		"trailingComma": "all",
 		"bracketSpacing": true,
 		"jsxBracketSameLine": false
-	}
+	},
+	"gitHead": "d4b25d8411a7a1489b1d830654dc239f8dffa670"
 }
