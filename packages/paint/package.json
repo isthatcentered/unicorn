@@ -1,6 +1,6 @@
 {
 	"name": "@isthatcentered/paint",
-	"version": "1.0.0",
+	"version": "1.0.1-alpha.0",
 	"description": "Merge default and override styles and classes for react component",
 	"main": "dist/cjs/index.js",
 	"module": "dist/esm/index.js",
